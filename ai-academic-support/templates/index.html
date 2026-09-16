@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-Powered Academic Support and Visual Learning System. Ask academic questions, solve math problems, analyze images, and visualize concepts with AI-generated diagrams.">
+    <title>AI Academic Support - Ask Anything, Learn Everything</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Mermaid.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- ============================================================ -->
+    <!-- NAVIGATION BAR                                                -->
+    <!-- ============================================================ -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#home" class="nav-logo">
+                <span class="logo-icon">🎓</span>
+                <span class="logo-text">AI Academic Support</span>
+            </a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#ask-section" class="nav-link">Ask AI</a></li>
+                <li><a href="#image-section" class="nav-link">Image Solver</a></li>
+                <li><a href="#about-section" class="nav-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ============================================================ -->
+    <!-- HERO SECTION                                                  -->
+    <!-- ============================================================ -->
+    <section class="hero" id="home">
+        <div class="hero-bg-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Ask Anything.<br>
+                <span class="gradient-text">Learn Everything.</span>
+            </h1>
+            <p class="hero-subtitle">Your AI-powered academic learning assistant. Get instant explanations, step-by-step solutions, visual diagrams, and image analysis — all in one place.</p>
+            <div class="hero-buttons">
+                <a href="#ask-section" class="btn btn-primary btn-lg">
+                    <span class="btn-icon">✨</span> Ask a Question
+                </a>
+                <a href="#image-section" class="btn btn-outline btn-lg">
+                    <span class="btn-icon">📷</span> Upload Image
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-icon">📚</span>
+                    <span class="stat-label">All Subjects</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">🧮</span>
+                    <span class="stat-label">Math Solver</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">💻</span>
+                    <span class="stat-label">Code Help</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">📊</span>
+                    <span class="stat-label">Visual Diagrams</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-alt" id="wiki-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Wikipedia Quick Search</h2>
+                <p class="section-subtitle">Look up a topic for a fast summary, quick facts, and a reference link.</p>
+            </div>
+
+            <div class="question-card">
+                <div class="input-group">
+                    <input id="wikiInput" class="question-textarea" type="text" placeholder="Search Wikipedia, e.g. Photosynthesis or Machine learning" />
+                    <div class="input-actions">
+                        <button id="wikiBtn" class="btn btn-primary" onclick="searchWikipedia()">
+                            <span class="btn-icon">🌐</span> Search Wikipedia
+                        </button>
+                    </div>
+                </div>
+
+                <div id="wikiLoading" class="loading-container hidden">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">📖 Searching Wikipedia...</p>
+                </div>
+
+                <div id="wikiError" class="error-container hidden">
+                    <span class="error-icon">⚠️</span>
+                    <p id="wikiErrorText" class="error-text"></p>
+                </div>
+
+                <div id="wikiResults" class="results-container hidden" style="margin-top: 20px;">
+                    <h3 class="results-title">📘 Wikipedia Summary</h3>
+                    <div class="result-card">
+                        <div class="card-header">
+                            <span class="card-icon">🌍</span>
+                            <h4 id="wikiTitle" class="card-title"></h4>
+                        </div>
+                        <div class="card-body">
+                            <p id="wikiDescription" class="wiki-description"></p>
+                            <p id="wikiSummary"></p>
+                            <a id="wikiLink" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Read full article</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- ASK AI SECTION                                                -->
+    <!-- ============================================================ -->
+    <section class="section" id="ask-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Ask Your Question</h2>
+                <p class="section-subtitle">Type any academic question — from science and math to programming and more.</p>
+            </div>
+
+            <div class="question-card">
+                <div class="input-group">
+                    <textarea 
+                        id="questionInput" 
+                        class="question-textarea" 
+                        placeholder="Type your question here... e.g., 'Explain photosynthesis' or 'Solve 2x + 5 = 15'"
+                        rows="4"
+                    ></textarea>
+                    <div class="input-actions">
+                        <button id="askBtn" class="btn btn-primary" onclick="askQuestion()">
+                            <span class="btn-icon">🚀</span> Ask AI
+                        </button>
+                        <button id="clearBtn" class="btn btn-secondary" onclick="clearQuestion()">
+                            <span class="btn-icon">🗑️</span> Clear
+                        </button>
+                    </div>
+                </div>
+
+                <div class="example-questions">
+                    <span class="example-label">Try these:</span>
+                    <div class="example-buttons">
+                        <button class="example-btn" onclick="setExample('Explain photosynthesis in detail')">🌿 Photosynthesis</button>
+                        <button class="example-btn" onclick="setExample(&quot;Explain Newton's three laws of motion&quot;)">🍎 Newton's Laws</button>
+                        <button class="example-btn" onclick="setExample('What is Machine Learning? Explain with examples')">🤖 Machine Learning</button>
+                        <button class="example-btn" onclick="setExample('Explain normalization in DBMS with examples')">🗄️ DBMS</button>
+                        <button class="example-btn" onclick="setExample('Explain the water cycle step by step')">💧 Water Cycle</button>
+                        <button class="example-btn" onclick="setExample('Solve 2x + 5 = 15')">🧮 Math Problem</button>
+                        <button class="example-btn" onclick="setExample('Explain Python for loop with code example')">🐍 Python Loop</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="questionLoading" class="loading-container hidden">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">🤖 AI is thinking...</p>
+            </div>
+
+            <!-- Error Display -->
+            <div id="questionError" class="error-container hidden">
+                <span class="error-icon">⚠️</span>
+                <p id="questionErrorText" class="error-text"></p>
+            </div>
+
+            <!-- Question Results -->
+            <div id="questionResults" class="results-container hidden">
+                <h3 class="results-title">📝 AI Response</h3>
+                
+                <div class="result-cards">
+                    <!-- Short Answer -->
+                    <div class="result-card card-short-answer">
+                        <div class="card-header">
+                            <span class="card-icon">💡</span>
+                            <h4 class="card-title">Short Answer</h4>
+                        </div>
+                        <div class="card-body" id="shortAnswer"></div>
+                    </div>
+
+                    <!-- Detailed Explanation -->
+                    <div class="result-card card-detail">
+                        <div class="card-header">
+                            <span class="card-icon">📖</span>
+                            <h4 class="card-title">Detailed Explanation</h4>
+                        </div>
+                        <div class="card-body" id="detailedExplanation"></div>
+                    </div>
+
+                    <!-- Step-by-Step -->
+                    <div class="result-card card-steps">
+                        <div class="card-header">
+                            <span class="card-icon">📋</span>
+                            <h4 class="card-title">Step-by-Step Solution</h4>
+                        </div>
+                        <div class="card-body" id="stepByStep"></div>
+                    </div>
+
+                    <!-- Example -->
+                    <div class="result-card card-example">
+                        <div class="card-header">
+                            <span class="card-icon">🔬</span>
+                            <h4 class="card-title">Example</h4>
+                        </div>
+                        <div class="card-body" id="exampleContent"></div>
+                    </div>
+
+                    <!-- Important Points -->
+                    <div class="result-card card-points">
+                        <div class="card-header">
+                            <span class="card-icon">⭐</span>
+                            <h4 class="card-title">Important Points</h4>
+                        </div>
+                        <div class="card-body" id="importantPoints"></div>
+                    </div>
+
+                    <!-- Visual Diagram -->
+                    <div class="result-card card-diagram hidden" id="diagramCard">
+                        <div class="card-header">
+                            <span class="card-icon">📊</span>
+                            <h4 class="card-title">Visual Diagram</h4>
+                            <button class="toggle-code-btn" id="toggleDiagramCode" onclick="toggleMermaidCode()">View Diagram Code</button>
+                        </div>
+                        <div class="card-body">
+                            <div id="mermaidDiagram" class="mermaid-container"></div>
+                            <pre id="mermaidCodeBlock" class="mermaid-code hidden"><code id="mermaidCode"></code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Related Topics -->
+                    <div class="result-card card-related">
+                        <div class="card-header">
+                            <span class="card-icon">🔗</span>
+                            <h4 class="card-title">Related Topics</h4>
+                        </div>
+                        <div class="card-body" id="relatedTopics"></div>
+                    </div>
+
+                    <!-- Sources -->
+                    <div class="result-card card-related">
+                        <div class="card-header">
+                            <span class="card-icon">🔎</span>
+                            <h4 class="card-title">Google Sources</h4>
+                        </div>
+                        <div class="card-body" id="sourceLinks"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- IMAGE SOLVER SECTION                                          -->
+    <!-- ============================================================ -->
+    <section class="section section-alt" id="image-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Image Question Solver</h2>
+                <p class="section-subtitle">Upload a photo of a handwritten question, math problem, diagram, or textbook page — and let AI analyze it.</p>
+            </div>
+
+            <div class="image-upload-card">
+                <div class="upload-area" id="uploadArea">
+                    <div id="uploadPlaceholder" class="upload-placeholder">
+                        <span class="upload-icon">�</span>
+                        <p class="upload-text">Upload any file or image here</p>
+                        <p class="upload-hint">Works with images, PDFs, docs, notes, and other files (Max 5 MB)</p>
+                    </div>
+                    <img id="imagePreview" class="image-preview hidden" alt="Uploaded image preview">
+                        <input type="file" id="imageInput" class="file-input" title="Choose an image or PDF file" accept=".png,.jpg,.jpeg,.webp,.pdf,application/pdf" onchange="handleImageSelect(event)">
+                </div>
+                <div class="upload-actions">
+                    <button id="analyzeBtn" class="btn btn-primary" onclick="analyzeImage()" disabled>
+                        <span class="btn-icon">🔍</span> Analyze File
+                    </button>
+                    <button id="removeImageBtn" class="btn btn-secondary hidden" onclick="removeImage()">
+                        <span class="btn-icon">✖️</span> Remove File
+                    </button>
+                </div>
+            </div>
+
+            <!-- Image Loading Indicator -->
+            <div id="imageLoading" class="loading-container hidden">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">🤖 AI is analyzing your image...</p>
+            </div>
+
+            <!-- Image Error Display -->
+            <div id="imageError" class="error-container hidden">
+                <span class="error-icon">⚠️</span>
+                <p id="imageErrorText" class="error-text"></p>
+            </div>
+
+            <!-- Image Results -->
+            <div id="imageResults" class="results-container hidden">
+                <h3 class="results-title">📝 Image Analysis</h3>
+
+                <!-- Show uploaded image -->
+                <div class="result-card card-uploaded-image" id="uploadedImageCard">
+                    <div class="card-header">
+                        <span class="card-icon">🖼️</span>
+                        <h4 class="card-title">Uploaded Image</h4>
+                    </div>
+                    <div class="card-body">
+                        <img id="resultImage" class="result-image" alt="Analyzed image">
+                    </div>
+                </div>
+
+                <div class="result-cards">
+                    <!-- Detected Content -->
+                    <div class="result-card card-detected">
+                        <div class="card-header">
+                            <span class="card-icon">🔍</span>
+                            <h4 class="card-title">Question / Content Detected</h4>
+                        </div>
+                        <div class="card-body" id="detectedContent"></div>
+                    </div>
+
+                    <!-- Answer -->
+                    <div class="result-card card-short-answer">
+                        <div class="card-header">
+                            <span class="card-icon">💡</span>
+                            <h4 class="card-title">Answer</h4>
+                        </div>
+                        <div class="card-body" id="imageAnswer"></div>
+                    </div>
+
+                    <!-- Step-by-Step -->
+                    <div class="result-card card-steps">
+                        <div class="card-header">
+                            <span class="card-icon">📋</span>
+                            <h4 class="card-title">Step-by-Step Explanation</h4>
+                        </div>
+                        <div class="card-body" id="imageStepByStep"></div>
+                    </div>
+
+                    <!-- Important Concepts -->
+                    <div class="result-card card-points">
+                        <div class="card-header">
+                            <span class="card-icon">⭐</span>
+                            <h4 class="card-title">Important Concepts</h4>
+                        </div>
+                        <div class="card-body" id="imageConcepts"></div>
+                    </div>
+
+                    <!-- Diagram Explanation -->
+                    <div class="result-card card-detail">
+                        <div class="card-header">
+                            <span class="card-icon">📐</span>
+                            <h4 class="card-title">Diagram Explanation</h4>
+                        </div>
+                        <div class="card-body" id="diagramExplanation"></div>
+                    </div>
+
+                    <!-- Student Tip -->
+                    <div class="result-card card-tip">
+                        <div class="card-header">
+                            <span class="card-icon">🎯</span>
+                            <h4 class="card-title">Student Tip</h4>
+                        </div>
+                        <div class="card-body" id="studentTip"></div>
+                    </div>
+
+                    <!-- Sources -->
+                    <div class="result-card card-related">
+                        <div class="card-header">
+                            <span class="card-icon">🔎</span>
+                            <h4 class="card-title">Google Sources</h4>
+                        </div>
+                        <div class="card-body" id="imageSourceLinks"></div>
+                    </div>
+
+                    <!-- Image Mermaid Diagram -->
+                    <div class="result-card card-diagram hidden" id="imageDiagramCard">
+                        <div class="card-header">
+                            <span class="card-icon">📊</span>
+                            <h4 class="card-title">Visual Diagram</h4>
+                        </div>
+                        <div class="card-body">
+                            <div id="imageMermaidDiagram" class="mermaid-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- ABOUT SECTION                                                 -->
+    <!-- ============================================================ -->
+    <section class="section" id="about-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">About This Platform</h2>
+                <p class="section-subtitle">Built to make learning easier, faster, and more visual.</p>
+            </div>
+
+            <div class="about-grid">
+                <div class="about-card">
+                    <span class="about-icon">🎯</span>
+                    <h3>Smart Answers</h3>
+                    <p>Get comprehensive answers with short summaries, detailed explanations, and step-by-step solutions for any academic topic.</p>
+                </div>
+                <div class="about-card">
+                    <span class="about-icon">🧮</span>
+                    <h3>Math Solver</h3>
+                    <p>Solve mathematical equations with detailed step-by-step calculations and clear explanations of the methods used.</p>
+                </div>
+                <div class="about-card">
+                    <span class="about-icon">💻</span>
+                    <h3>Code Helper</h3>
+                    <p>Learn programming concepts with syntax explanations, code examples, expected outputs, and best practices.</p>
+                </div>
+                <div class="about-card">
+                    <span class="about-icon">📷</span>
+                    <h3>Image Analysis</h3>
+                    <p>Upload handwritten questions, diagrams, or textbook pages and get instant AI-powered analysis and solutions.</p>
+                </div>
+                <div class="about-card">
+                    <span class="about-icon">📊</span>
+                    <h3>Visual Diagrams</h3>
+                    <p>Automatically generated flowcharts and concept maps to help you visualize processes and relationships.</p>
+                </div>
+                <div class="about-card">
+                    <span class="about-icon">🌐</span>
+                    <h3>All Subjects</h3>
+                    <p>Supports Physics, Chemistry, Biology, Mathematics, Computer Science, and many more academic subjects.</p>
+                </div>
+            </div>
+
+            <div class="tech-stack">
+                <h3 class="tech-title">AI Versions & Technologies</h3>
+                <div class="tech-badges">
+                    <span class="tech-badge">Python</span>
+                    <span class="tech-badge">Flask</span>
+                    <span class="tech-badge">HTML5</span>
+                    <span class="tech-badge">CSS3</span>
+                    <span class="tech-badge">JavaScript</span>
+                    <span class="tech-badge">ChatGPT</span>
+                    <span class="tech-badge">Gemini AI</span>
+                    <span class="tech-badge">Gemini 3.6 Flash</span>
+                    <span class="tech-badge">Wikipedia</span>
+                    <span class="tech-badge">Mermaid.js</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- FOOTER                                                        -->
+    <!-- ============================================================ -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-text">
+                🎓 AI Academic Support &mdash; Final Year Project
+            </p>
+            <p class="footer-sub">Powered by Google Gemini AI &bull; Built with Flask &amp; Mermaid.js</p>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
